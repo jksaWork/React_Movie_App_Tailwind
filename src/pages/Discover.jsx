@@ -1,19 +1,23 @@
 import { genres } from "../assets/constants";
 import { useState } from "react";
-import { Error } from "./../components";
+import { Error, MovieCard } from "./../components";
+import { useDispatch, useSelector } from "react-redux";
+
 import {
   useGetRandomAcotrQuery,
   useGetTitlesQuery,
 } from "../redux/services/MovieCoreApi";
 import { Loader } from "../components";
 const Discover = () => {
-  // console.log(useGetRandomAcotrQuery);
-
+  const dispatch = useDispatch();
+  const { genreListId } = useSelector((state) => state.player);
+  const { activeSong, isPlaying } = useSelector((state) => state.player);
   const { data, isFetching, error } = useGetTitlesQuery();
-  console.log(data, error);
   const [Gerne, setGerne] = useState("");
+
   if (isFetching) return <Loader />;
   if (error) return <Error />;
+  console.log(activeSong);
 
   return (
     <div>
@@ -35,7 +39,16 @@ const Discover = () => {
             ))}
           </select>
         </div>
-        <div className="mt-5 flex  flex-row flex-wrap md:justify-start justify-center"></div>
+        <div className="mt-5 flex gap-4  flex-row flex-wrap md:justify-start justify-center">
+          {data.results.map((el, index) => (
+            <MovieCard
+              key={index}
+              movie={el}
+              activeSong={activeSong}
+              isPlaying={isPlaying}
+            />
+          ))}
+        </div>
       </div>
       {/*  */}
     </div>
